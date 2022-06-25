@@ -21,7 +21,9 @@ spec:
     spec:
       containers:
        - name: app
-         image: kalyand14/myimage:latest
+         image: kalyand14/myimage:<TAG>
+         imagePullPolicy: Always
+
 ---
 kind: Service
 apiVersion: v1
