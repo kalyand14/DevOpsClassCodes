@@ -19,7 +19,6 @@ pipeline {
         stage("Package") {
             steps {
                 sh "mvn clean package"
-                sh "mv target/*.war target/addressbook.war"
             }
         }
         stage("Build image") {
