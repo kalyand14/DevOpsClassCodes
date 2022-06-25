@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
        - name: app
-         image: kalyand14/myimage:docker
+         image: kalyand14/myimage:latest
 ---
 kind: Service
 apiVersion: v1
