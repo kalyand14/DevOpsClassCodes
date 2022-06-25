@@ -1,4 +1,8 @@
 pipeline {
+    tools{
+        jdk 'myjava'
+        maven 'mymaven'
+    }
     agent any
     environment {
         PROJECT_ID = 'swift-delight-352901'
@@ -10,6 +14,12 @@ pipeline {
         stage("Checkout code") {
             steps {
                 checkout scm
+            }
+        }
+        stage("Package") {
+            steps {
+                sh "mvn clean package"
+                sh "mv target/*.war target/addressbook.war"
             }
         }
         stage("Build image") {
