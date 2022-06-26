@@ -24,20 +24,25 @@ pipeline {
             sh "mvn clean package"
         }
     }
-
-    stage('Kaniko Build & Push Image') {
-      steps {
-        container('kaniko') {
-          script {
-            sh '''
-            /kaniko/executor --dockerfile `pwd`/Dockerfile \
-                             --context `pwd` \
-                             --destination=kalyand14/myimage:${BUILD_NUMBER}
-            '''
-          }
+    
+    stage("Build image") {
+            steps {
+                script {
+                    myapp = docker.build("kalyand14/myimage:${env.BUILD_ID}")
+                }
+            }
         }
-      }
-    }
+        stage("Push image") {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerID') {
+                            myapp.push("latest")
+                            myapp.push("${env.BUILD_ID}")
+                    }
+                }
+            }
+        }        
+
 
     stage('Deploy App to Kubernetes') {     
       steps {
