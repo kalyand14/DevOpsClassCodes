@@ -2,7 +2,7 @@ pipeline {
 
   tools{
       jdk 'myjava'
-      maven '3.8.1'
+      maven 'mymaven'
   }
   options {
     ansiColor('xterm')
