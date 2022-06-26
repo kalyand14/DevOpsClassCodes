@@ -1,17 +1,15 @@
 pipeline {
-
-  tools{
-      jdk 'myjava'
-      maven 'mymaven'
-  }
   options {
     ansiColor('xterm')
   }
-
   agent {
     kubernetes {
       yamlFile 'builder.yaml'
     }
+  }
+  tools{
+      jdk 'myjava'
+      maven 'mymaven'
   }
 
   stages {
