@@ -1,60 +1,58 @@
-
-pipeline{
-    tools{
-        jdk 'myjava'
-        maven 'mymaven'
+pipeline {
+  options {
+    ansiColor('xterm')
+  }
+  agent {
+    kubernetes {
+      yamlFile 'builder.yaml'
     }
-	agent any
-      stages{
-           stage('Checkout'){
-	    
-               steps{
-		 echo 'cloning..'
-                 git 'https://github.com/Sonal0409/DevOpsClassCodes.git'
-              }
+  }
+  tools{
+      jdk 'myjava'
+      maven 'mymaven'
+  }
+
+  stages {
+
+    stage("Checkout code") {
+        steps {
+            checkout scm
+        }
+    }
+    stage("Package") {
+        steps {
+            sh "mvn clean package"
+        }
+    }
+  
+  stage('Kaniko Build & Push Image') {
+   environment {
+                PATH = "/busybox:/kaniko:$PATH"
+            }
+      steps {
+        container(name: 'kaniko',  shell: '/busybox/sh') {
+          script {
+            sh '''#!/busybox/sh
+            /kaniko/executor   --dockerfile `pwd`/Dockerfile \
+                             --context `pwd` \
+                             --destination=kalyand14/myimage:${BUILD_NUMBER}
+            '''
           }
-          stage('Compile'){
-             
-              steps{
-                  echo 'compiling..'
-                  sh 'mvn compile'
-	      }
-          }
-          stage('CodeReview'){
-		  
-              steps{
-		    
-		  echo 'codeReview'
-                  sh 'mvn pmd:pmd'
-              }
-          }
-           stage('UnitTest'){
-		  
-              steps{
-	         echo 'Testing'
-                  sh 'mvn test'
-              }
-               post {
-               success {
-                   junit 'target/surefire-reports/*.xml'
-               }
-           }	
-          }
-           stage('MetricCheck'){
-              
-              steps{
-                  sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml'
-              }
-              
-          }
-          stage('Package'){
-		  
-              steps{
-		  
-                  sh 'mvn package'
-              }
-          }
-	     
-          
+        }
       }
+    }
+
+
+    stage('Deploy App to Kubernetes') {     
+      steps {
+        container('kubectl') {
+          withCredentials([file(credentialsId: 'mykubeconfig', variable: 'KUBECONFIG')]) {
+            sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" deployment.yaml'
+            sh 'kubectl apply -f deployment.yaml'
+          }
+        }
+      }
+    }
+  
+  }
 }
