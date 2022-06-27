@@ -33,7 +33,7 @@ pipeline {
         container(name: 'kaniko',  shell: '/busybox/sh') {
           script {
             sh '''#!/busybox/sh
-            /kaniko/executor  --verbosity debug  --dockerfile `pwd`/Dockerfile \
+            /kaniko/executor   --dockerfile `pwd`/Dockerfile \
                              --context `pwd` \
                              --destination=kalyand14/myimage:${BUILD_NUMBER}
             '''
