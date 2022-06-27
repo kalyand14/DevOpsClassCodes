@@ -69,4 +69,11 @@ designed. Please note this example uses and requires Java 8 to work..
 ![Addressbook Screenshot](addressbook_screenshot.png "Addressbook Screenshot")
 
 
-*** End of documentation
+Prometheus Reference - https://www.youtube.com/watch?v=dk2-_DbWb80 
+& https://github.com/shazforiot/Monitoring-Kubernetes-with-Prometheus-Grafana/blob/main/Helm%20Steps
+
+KubeConfig - https://www.youtube.com/watch?v=fodA9rM5xoo
+
+Kanikio - https://www.youtube.com/watch?v=YnZQJAMK6JI
+
+Jenkins Helm installation - https://www.bogotobogo.com/DevOps/Docker/Docker-Kubernetes-Jenkins-Helm.php
